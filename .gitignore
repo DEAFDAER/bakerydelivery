@@ -1,4 +1,11 @@
-# Node modules
+# ========================================
+# BAKERY ORDERING & DELIVERY SYSTEM
+# Comprehensive .gitignore
+# ========================================
+
+# ========================================
+# NODE.JS / FRONTEND (React/Vite)
+# ========================================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -94,46 +101,134 @@ public
 tmp/
 temp/
 
-# Logs
-logs/
+# ========================================
+# PYTHON / BACKEND (FastAPI)
+# ========================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
 *.log
+local_settings.py
+db.sqlite3
 
-# Environment variables
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Editor directories and files
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# ========================================
+# DATABASE
+# ========================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Neo4j specific
+neo4j.log
+neo4j.pid
+
+# ========================================
+# IDE / EDITOR FILES
+# ========================================
+# Visual Studio Code
 .vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-Thumbs.db
+!.vscode/extensions.json
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Windows
-Desktop.ini
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
-*.lnk
-
-# JetBrains IDEs
+# PyCharm / IntelliJ
 .idea/
 
 # Vim
@@ -158,41 +253,184 @@ tramp
 *.sublime-workspace
 *.sublime-project
 
-# Database
-*.sqlite
-*.sqlite3
-*.db
+# ========================================
+# OS GENERATED FILES
+# ========================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Backend specific
-backend/__pycache__/
-backend/*.pyc
-backend/*.pyo
-backend/*.pyd
-backend/.Python
-backend/env/
-backend/venv/
-backend/.env
-backend/.venv/
-backend/dist/
-backend/build/
+# Windows
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+Thumbs.db
+ehthumbs.db
+desktop.ini
 
-# Frontend specific (React/Vite)
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-frontend/.next/
-frontend/coverage/
+# Linux
+*~
 
-# Logs
+# ========================================
+# LOGS AND TEMPORARY FILES
+# ========================================
 *.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.swp
+*.swo
 
-# Environment variables
-.env*
+# ========================================
+# ENVIRONMENT AND CONFIG FILES
+# ========================================
+# Environment variables (already covered above but being explicit)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
 
-# IDE
+# Configuration files that may contain sensitive data
+config.local.*
+settings.local.*
+secrets.*
+
+# ========================================
+# FRONTEND SPECIFIC
+# ========================================
+# React/Vite specific
+node_modules/
+dist/
+build/
+coverage/
+
+# Vite
+.vite/
+
+# Create React App
+/public/build
+
+# ========================================
+# BACKEND SPECIFIC
+# ========================================
+# Python virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# FastAPI
+*.log
+*.pid
+
+# ========================================
+# DEVELOPMENT TOOLS
+# ========================================
+# Testing
+coverage/
+.nyc_output/
+.coverage*
+
+# Linting
+.eslintcache
+.stylelintcache
+
+# Type checking
+.mypy_cache/
+
+# ========================================
+# PRODUCTION / DEPLOYMENT
+# ========================================
+# Build outputs (already covered but being explicit)
+dist/
+build/
+.next/
+out/
+
+# Deployment artifacts
+deploy/
+deployment/
+
+# ========================================
+# SECURITY
+# ========================================
+# API keys, secrets, tokens
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+
+# Database credentials (if not in env files)
+*credentials*
+*secret*
+*token*
+
+# ========================================
+# DOCUMENTATION
+# ========================================
+# Generated docs
+docs/_build/
+docs/build/
+
+# API documentation
+api-docs/
+
+# ========================================
+# BACKUP FILES
+# ========================================
+*.bak
+*.backup
+*~
+
+# ========================================
+# PROJECT SPECIFIC
+# ========================================
+# Bakery project specific
+bakery.db
+*.sqlite3
+neo4j.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE settings
 .vscode/
 .idea/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+
+# ========================================
+# FINAL NOTE
+# ========================================
+# This .gitignore is comprehensive for a full-stack
+# bakery ordering and delivery system with:
+# - React frontend
+# - FastAPI backend
+# - Neo4j database
+# - Python environment
+# - Node.js dependencies
+# ========================================
