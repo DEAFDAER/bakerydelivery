@@ -18,9 +18,7 @@ import {
   OrderFilters
 } from '../types';
 
-// Use environment variable for API URL, fallback to localhost for development
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-console.log('API Base URL:', API_BASE_URL);
 
 class ApiService {
   private axiosInstance: AxiosInstance;
@@ -48,14 +46,9 @@ class ApiService {
       (response: AxiosResponse) => response,
       (error: any) => {
         if (error.response?.status === 401) {
-          // Only redirect to login if we're not on a public page
-          const publicPaths = ['/products', '/login', '/register', '/'];
-          const currentPath = window.location.pathname;
-          if (!publicPaths.some(path => currentPath.startsWith(path))) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
-          }
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
         }
         return Promise.reject(error);
       }
@@ -87,16 +80,15 @@ class ApiService {
   }
 
   // Products
-  async getProducts(filters?: ProductFilters): Promise<Product[]> {
-    const params = new URLSearchParams();
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          params.append(key, value.toString());
-        }
-      });
-    }
-    const response: AxiosResponse<Product[]> = await this.axiosInstance.get(`/api/products/?${params}`);
+  async getProducts(filters?: Omit<ProductFilters, 'category_id'|'category_name'>): Promise<Product[]> {
+    const params = {
+      min_price: filters?.min_price,
+      max_price: filters?.max_price,
+      in_stock: filters?.in_stock,
+      search: filters?.search
+    };
+    
+    const response: AxiosResponse<Product[]> = await this.axiosInstance.get('/api/products/', { params });
     return response.data;
   }
 

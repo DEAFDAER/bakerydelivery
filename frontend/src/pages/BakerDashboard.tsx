@@ -20,10 +20,6 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Alert,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -31,29 +27,21 @@ import { Add as AddIcon, Inventory, TrendingUp, Schedule } from '@mui/icons-mate
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth';
 import { apiService } from '../services/api';
-import { Product, Category, Order, ProductFormData, CategoryFormData } from '../types';
+import { Product, Order, ProductFormData } from '../types';
 import toast from 'react-hot-toast';
 
 const BakerDashboard: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showProductForm, setShowProductForm] = useState(false);
-  const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   const { register: registerProduct, handleSubmit: handleSubmitProduct, reset: resetProduct, formState: { errors: productErrors } } = useForm<ProductFormData>();
-  const { register: registerCategory, handleSubmit: handleSubmitCategory, reset: resetCategory, formState: { errors: categoryErrors } } = useForm<CategoryFormData>();
 
   // Fetch baker's products
   const { data: products = [], isPending: productsLoading } = useQuery<Product[]>({
-    queryKey: ['baker-products', user?.id],
+    queryKey: ['baker-products'],
     queryFn: () => apiService.getProducts()
-  });
-
-  // Fetch categories
-  const { data: categories = [] } = useQuery<Category[]>({
-    queryKey: ['categories'],
-    queryFn: apiService.getCategories
   });
 
   // Fetch orders for baker management
@@ -73,20 +61,6 @@ const BakerDashboard: React.FC = () => {
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to create product');
-    }
-  });
-
-  // Create category mutation
-  const createCategoryMutation = useMutation<Category, Error, CategoryFormData>({
-    mutationFn: (categoryData) => apiService.createCategory(categoryData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success('Category created successfully!');
-      setShowCategoryForm(false);
-      resetCategory();
-    },
-    onError: (error) => {
-      toast.error(error.message || 'Failed to create category');
     }
   });
 
@@ -117,19 +91,7 @@ const BakerDashboard: React.FC = () => {
   });
 
   const handleCreateProduct = (data: ProductFormData) => {
-    if (!user?.email) {
-      toast.error('You must be logged in to create a product.');
-      return;
-    }
-    const productDataWithBaker = {
-      ...data,
-      baker_email: user.email,
-    };
-    createProductMutation.mutate(productDataWithBaker);
-  };
-
-  const handleCreateCategory = (data: CategoryFormData) => {
-    createCategoryMutation.mutate(data);
+    createProductMutation.mutate(data);
   };
 
   const handleEditProduct = (product: Product) => {
@@ -139,8 +101,7 @@ const BakerDashboard: React.FC = () => {
       description: product.description || '',
       price: product.price,
       image_url: product.image_url || '',
-      stock_quantity: product.stock_quantity,
-      category_name: product.category?.name || '',
+      stock_quantity: product.stock_quantity
     });
   };
 
@@ -252,13 +213,6 @@ const BakerDashboard: React.FC = () => {
             >
               Add Product
             </Button>
-            <Button
-              variant="outlined"
-              startIcon={<AddIcon />}
-              onClick={() => setShowCategoryForm(true)}
-            >
-              Add Category
-            </Button>
           </Box>
         </Box>
 
@@ -275,7 +229,6 @@ const BakerDashboard: React.FC = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>Category</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Stock</TableCell>
                   <TableCell>Status</TableCell>
@@ -286,7 +239,6 @@ const BakerDashboard: React.FC = () => {
                 {products.map((product) => (
                   <TableRow key={product.id} hover>
                     <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.category?.name || 'No Category'}</TableCell>
                     <TableCell>{formatCurrency(product.price)}</TableCell>
                     <TableCell>
                       <Chip
@@ -339,18 +291,18 @@ const BakerDashboard: React.FC = () => {
               <TextField
                 margin="normal"
                 fullWidth
-                label="Product Name"
-                {...registerProduct('name', { required: 'Product name is required' })}
+                label="Name"
+                {...registerProduct('name', { required: 'Name is required' })}
                 error={!!productErrors.name}
                 helperText={productErrors.name?.message}
               />
               <TextField
                 margin="normal"
                 fullWidth
-                multiline
-                rows={3}
                 label="Description"
                 {...registerProduct('description')}
+                multiline
+                rows={4}
               />
               <TextField
                 margin="normal"
@@ -367,12 +319,6 @@ const BakerDashboard: React.FC = () => {
               <TextField
                 margin="normal"
                 fullWidth
-                label="Image URL"
-                {...registerProduct('image_url')}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
                 type="number"
                 label="Stock Quantity"
                 {...registerProduct('stock_quantity', {
@@ -381,14 +327,6 @@ const BakerDashboard: React.FC = () => {
                 })}
                 error={!!productErrors.stock_quantity}
                 helperText={productErrors.stock_quantity?.message}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Category"
-                {...registerProduct('category_name', { required: 'Category is required' })}
-                error={!!productErrors.category_name}
-                helperText={productErrors.category_name?.message}
               />
             </DialogContent>
             <DialogActions>
@@ -401,51 +339,6 @@ const BakerDashboard: React.FC = () => {
               </Button>
               <Button type="submit" variant="contained">
                 {editingProduct ? 'Update' : 'Create'}
-              </Button>
-            </DialogActions>
-          </form>
-        </Dialog>
-
-        {/* Category Form Dialog */}
-        <Dialog open={showCategoryForm} onClose={() => {
-          setShowCategoryForm(false);
-          resetCategory();
-        }} maxWidth="sm" fullWidth>
-          <form onSubmit={handleSubmitCategory(handleCreateCategory)}>
-            <DialogTitle>Add New Category</DialogTitle>
-            <DialogContent>
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Category Name"
-                {...registerCategory('name', { required: 'Category name is required' })}
-                error={!!categoryErrors.name}
-                helperText={categoryErrors.name?.message}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                multiline
-                rows={3}
-                label="Description"
-                {...registerCategory('description')}
-              />
-              <TextField
-                margin="normal"
-                fullWidth
-                label="Image URL"
-                {...registerCategory('image_url')}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => {
-                setShowCategoryForm(false);
-                resetCategory();
-              }}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="contained">
-                Create Category
               </Button>
             </DialogActions>
           </form>

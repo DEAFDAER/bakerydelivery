@@ -96,12 +96,13 @@ export interface ProductFormData {
   price: number;
   image_url?: string;
   stock_quantity: number;
-  category_name: string;
   is_available?: boolean;
+  baker_email: string;
 }
 
 export interface ProductFilters {
   category_id?: number;
+  category_name?: string;
   min_price?: number;
   max_price?: number;
   in_stock?: boolean;
@@ -176,7 +177,7 @@ export interface OrderFormData {
   delivery_address: string;
   delivery_instructions?: string;
   items: Array<{
-    product_name: string;
+    product_id: number;
     quantity: number;
   }>;
 }

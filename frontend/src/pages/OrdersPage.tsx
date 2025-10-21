@@ -19,17 +19,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Alert,
 } from '@mui/material';
+import { useForm } from 'react-hook-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { QueryClient } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth';
 import { apiService } from '../services/api';
-import type { Order, OrderStatus } from '../types';
+import type { Order, OrderStatus, OrderFormData } from '../types';
 import { getErrorMessage } from '../utils/error';
 import toast from 'react-hot-toast';
 
@@ -37,6 +39,9 @@ const OrdersPage: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [showOrderForm, setShowOrderForm] = useState(false);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<OrderFormData>();
 
   // Fetch orders based on user role
   const { data: orders = [], isPending } = useQuery<Order[]>({
@@ -111,6 +116,14 @@ const OrdersPage: React.FC = () => {
           <Typography variant="h4">
             {user?.role === 'customer' ? 'My Orders' : 'All Orders'}
           </Typography>
+          {user?.role === 'customer' && (
+            <Button
+              variant="contained"
+              onClick={() => setShowOrderForm(true)}
+            >
+              Place New Order
+            </Button>
+          )}
         </Box>
 
         {isPending ? (
@@ -282,6 +295,44 @@ const OrdersPage: React.FC = () => {
           )}
         </Dialog>
 
+        {/* New Order Form Dialog */}
+        <Dialog
+          open={showOrderForm}
+          onClose={() => setShowOrderForm(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Place New Order</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Delivery Address"
+              multiline
+              rows={3}
+              {...register('delivery_address', { required: 'Delivery address is required' })}
+              error={!!errors.delivery_address}
+              helperText={errors.delivery_address?.message}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Delivery Instructions (Optional)"
+              multiline
+              rows={2}
+              {...register('delivery_instructions')}
+            />
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Add items to your cart from the Products page first, then place your order.
+            </Alert>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowOrderForm(false)}>Cancel</Button>
+            <Button variant="contained" disabled>
+              Place Order (Coming Soon)
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Container>
   );
