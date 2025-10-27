@@ -323,6 +323,13 @@ coverage/
 # Create React App
 /public/build
 
+# Frontend exclusions
+frontend/node_modules/
+frontend/.env.local
+frontend/build/
+frontend/.DS_Store
+frontend/.cache
+
 # ========================================
 # BACKEND SPECIFIC
 # ========================================
@@ -341,6 +348,16 @@ __pycache__/
 # FastAPI
 *.log
 *.pid
+
+# Backend exclusions
+backend/venv/
+backend/.env
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+pip-log.txt
 
 # ========================================
 # DEVELOPMENT TOOLS
@@ -434,3 +451,8 @@ Thumbs.db
 # - Python environment
 # - Node.js dependencies
 # ========================================
+
+# General exclusions
+.DS_Store
+*.log
+npm-debug.log*
