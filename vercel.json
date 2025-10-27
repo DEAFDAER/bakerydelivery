@@ -1,14 +1,13 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build"
-      }
+  "builds": [{
+    "src": "frontend/package.json",
+    "use": "@vercel/static-build",
+    "config": {
+      "distDir": "build",
+      "workingDirectory": "frontend"
     }
-  ],
+  }],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -24,10 +23,5 @@
   ],
   "env": {
     "REACT_APP_API_URL": "https://bongao-bakery-backend.onrender.com"
-  },
-  "functions": {
-    "frontend/package.json": {
-      "runtime": "nodejs18.x"
-    }
   }
 }
