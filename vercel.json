@@ -8,5 +8,26 @@
         "distDir": "build"
       }
     }
-  ]
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://bongao-bakery-backend.onrender.com/api/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://bongao-bakery-backend.onrender.com"
+  },
+  "functions": {
+    "frontend/package.json": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
