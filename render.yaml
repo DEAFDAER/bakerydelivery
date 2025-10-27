@@ -1,10 +1,7 @@
 services:
   - name: bongao-bakery-backend
     type: web
-    env: node
-    buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /health
-    envVars:
-      - key: NODE_ENV
-        value: production
+    env: python
+    pythonVersion: "3.11"  # Downgrade from 3.13
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.app.main:app --bind 0.0.0.0:$PORT
